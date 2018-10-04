@@ -3,11 +3,16 @@ import Moves
 dic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
 class Piece:
-    def __init__(self):
+    def __init__(self, color):
+        super(Piece, self).__init__()
         self.moves = list()
+        self.color = color
 
     def add(self,move):
         self.moves.append(move)
+
+    def checkMove(self,table, i, f):
+        return True
 
     def move(self,i, f):
         self.result = list()
@@ -17,8 +22,8 @@ class Piece:
 
 class Queen(Piece):
     def __init__(self):
+        super().__init__()
         self.moves = list()
-        self.result = list()
         self.hm = Moves.HorizontalMove()
         self.vm = Moves.VerticalMove()
         self.dm = Moves.DiagonalMove()
@@ -31,7 +36,6 @@ class Queen(Piece):
 class King(Piece):
     def __init__(self):
         self.moves = list()
-        self.result = list()
         self.hm = Moves.HorizontalMove(1)
         self.vm = Moves.VerticalMove(1)
         self.add(self.hm)
@@ -48,13 +52,25 @@ class Alphil(Piece):
         self.result = list()
         self.dm = Moves.DiagonalMove()
         self.add(self.dm)
+    def checkMove(self,table, i, f):
+        inicio = dic.index(i[0]) + 1
+        final = dic.index(f[0]) + 1
+        if inicio > final:
+            inicio, final = final, inicio
+        columna  = int(i[1])
+        for v in dic[inicio:final]:
+            if table[v][columna] is not '_': return False
+            columna += 1
+        else: return True
     def getName(self):
         return "Alphil"
+    def move(self,i, f):
+        super(Alphil, self).move(i, f)
+        return self.result
 
 class Tower(Piece):
     def __init__(self):
         self.moves = list()
-        self.result = list()
         self.hm = Moves.HorizontalMove()
         self.vm = Moves.VerticalMove()
         self.add(self.hm)
@@ -68,7 +84,6 @@ class Tower(Piece):
         elif i[1] == f[1]:
             inicio = dic.index(i[0]) + 1
             final = dic.index(f[0]) + 1
-
             for v in dic[inicio:final]:
                 if table[v][int(i[1])] is not '_': return False
     def move(self,i, f):
@@ -79,7 +94,6 @@ class Tower(Piece):
 class Horsi(Piece):
     def __init__(self):
         self.moves = list()
-        self.result = list()
         self.hm = Moves.HorizontalMove(2)
         self.vm = Moves.VerticalMove(2)
         self.add(self.hm)
@@ -95,13 +109,13 @@ class Horsi(Piece):
 class Pawn(Piece):
     def __init__(self):
         self.moves = list()
-        self.result = list()
         self.hm = Moves.HorizontalMove(2)
         self.add(self.hm)
     def getName(self):
         return "Pawn"
     def move(self,i, f):
         super(Pawn, self).move(i, f)
+        print(self.result)
         return all(*self.result)
 
 """
